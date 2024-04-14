@@ -1,45 +1,51 @@
 /* eslint-disable prettier/prettier */
-import { ObjectType, Field, Directive} from '@nestjs/graphql';
+import { ObjectType, Field, Directive } from '@nestjs/graphql';
 
 @ObjectType()
-@Directive('@key(field:"id")')
+@Directive('@key(fields:"id")')
 export class Avatars {
     @Field()
     id: string;
-
+  
     @Field()
-    public_id:string
-
+    public_id: string;
+  
     @Field()
-    url: string
-
+    url: string;
+  
     @Field()
     userId: string;
-}
+  }
 
-@ObjectType()
-export class User {
+  @ObjectType()
+  export class User {
     @Field()
     id: string;
-
+  
     @Field()
-    name:string
-
+    name: string;
+  
     @Field()
-    email: string
-
+    email: string;
+  
     @Field()
     password: string;
-
-    @Field(() => Avatars, {nullable: true})
-    avatar?: Avatars | null
-
+  
+    @Field(() => Avatars, { nullable: true })
+    avatar?: Avatars | null;
+  
     @Field()
-    role:string
-
+    role: string;
+  
+    @Field({ nullable: true })
+    address: string;
+  
+    @Field({ nullable: true })
+    phone_number: number;
+  
     @Field()
-    createdAt: Date
-
+    createdAt: Date;
+  
     @Field()
     updatedAt: Date;
-}
+  }
