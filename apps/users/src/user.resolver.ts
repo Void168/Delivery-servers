@@ -1,11 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { BadGatewayException } from '@nestjs/common';
+import { BadGatewayException, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { ActivationResponse, LoginResponse, RegisterResponse } from './types/user.types';
+import { ActivationResponse, LoginResponse, LogoutResponse, RegisterResponse } from './types/user.types';
 import { ActivationDto, RegisterDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
 import { Response } from 'express';
+import { AuthGuard } from './guards/auth.guard';
 
 @Resolver('User')
 // UserFilters
@@ -43,6 +44,18 @@ export class UsersResolver {
     @Args('password') password: string,
   ): Promise<LoginResponse> {
     return await this.userService.Login({ email, password });
+  }
+
+  @Query(() => LoginResponse)
+  @UseGuards(AuthGuard)
+  async getLoggedInUser(@Context() context: { req: Request }){
+    return await this.userService.getLoggedInUser(context.req)
+  }
+
+  @Query(() => LogoutResponse)
+  @UseGuards(AuthGuard)
+  async logOutUser(@Context() context: { req: Request }){
+    return await this.userService.Logout(context.req)
   }
 
   @Query(() => [User])

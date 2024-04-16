@@ -41,6 +41,8 @@ export class AuthGuard implements CanActivate {
 
       await this.updateAccessToken(req);
     }
+    
+    return true;
   }
 
   private async updateAccessToken(req: any): Promise<void> {

@@ -151,6 +151,8 @@ export class UsersService {
       };
     }
   }
+
+  // compare with hashed password
   async comparePassword(
     password: string,
     hashedPassword: string,
@@ -158,6 +160,25 @@ export class UsersService {
     return await bcrypt.compare(password, hashedPassword);
   }
 
+  // get logged in user
+  async getLoggedInUser(req: any) {
+    const user = req.user
+    const refreshToken = req.refreshToken
+    const accessToken = req.accessToken
+
+    return { user, refreshToken, accessToken }
+  }
+
+  // log out user
+  async Logout(req: any){
+    req.user = null
+    req.refreshToken = null
+    req.accessToken = null
+
+    return { message: 'Logged out successfully!'}
+  }
+
+  // get all users service
   async getUsers() {
     return this.prisma.user.findMany({});
   }
