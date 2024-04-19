@@ -27,8 +27,9 @@ export class UsersService {
   ) {}
 
   // register user service
-  async register(registerDto: RegisterDto, response:Response) {
+  async register(registerDto: RegisterDto, response: Response) {
     const { name, email, password, phone_number } = registerDto;
+
     const isEmailExist = await this.prisma.user.findUnique({
       where: {
         email,
@@ -38,40 +39,42 @@ export class UsersService {
       throw new BadRequestException('User already exist with this email!');
     }
 
-    const isPhoneNumberExist = await this.prisma.user.findUnique({
+    const usersWithPhoneNumber = await this.prisma.user.findMany({
       where: {
-        phone_number,
+        phone_number
       },
     });
 
-    if (isPhoneNumberExist) {
-      throw new BadRequestException('User already exist with this email!');
+    if (usersWithPhoneNumber.length > 0) {
+      throw new BadRequestException(
+        'User already exist with this phone number!',
+      );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = {
-        name,
-        email,
-        password: hashedPassword,
-        phone_number,
-      }
+      name,
+      email,
+      password: hashedPassword,
+      phone_number,
+    };
 
-    const activationToken = await this.createActivationToken(user)
+    const activationToken = await this.createActivationToken(user);
 
-    const activationCode = activationToken.activationCode
+    const activationCode = activationToken.activationCode;
 
-    const activation_token = activationToken.token
+    const activation_token = activationToken.token;
 
     await this.emailService.sendMail({
       email,
       subject: 'Activate your account!',
-      template: './activation-mail',
+      template: '../servers/email-templates/activation-mail',
       name,
-      activationCode
-    })
+      activationCode,
+    });
 
-    return {activation_token, response}
+    return { activation_token, response };
   }
 
   // create activation token
