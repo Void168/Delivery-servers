@@ -1,11 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
-import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import {
-  ApolloFederationDriverConfig,
   ApolloFederationDriver,
+  ApolloFederationDriverConfig,
 } from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -26,7 +25,7 @@ import { EmailModule } from './email/email.module';
     }),
     EmailModule,
   ],
-  controllers: [UsersController],
+  controllers: [],
   providers: [
     UsersService,
     ConfigService,
