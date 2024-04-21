@@ -2,8 +2,8 @@
 import { BadGatewayException, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { ActivationResponse, LoginResponse, LogoutResponse, RegisterResponse } from './types/user.types';
-import { ActivationDto, RegisterDto } from './dto/user.dto';
+import { ActivationResponse, ForgotPasswordResponse, LoginResponse, LogoutResponse, RegisterResponse } from './types/user.types';
+import { ActivationDto, ForgotPasswordDto, RegisterDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
 import { Response } from 'express';
 import { AuthGuard } from './guards/auth.guard';
@@ -50,6 +50,13 @@ export class UsersResolver {
   @UseGuards(AuthGuard)
   async getLoggedInUser(@Context() context: { req: Request }){
     return await this.userService.getLoggedInUser(context.req)
+  }
+
+  @Mutation(() => ForgotPasswordResponse)
+  async forgotPassword(
+    @Args('forgotPasswordDto') forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<ForgotPasswordResponse> {
+    return await this.userService.forgotPassword(forgotPasswordDto);
   }
 
   @Query(() => LogoutResponse)
